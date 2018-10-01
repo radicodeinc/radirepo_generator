@@ -53,20 +53,31 @@ module DailyReportGenerator
       diff = (to - from).to_i
       diff.zero? ? from -= since : since = diff
 
+      puts "## 本日の作業内容"
+      puts ""
+      puts "## 発生した問題"
+      puts ""
+      puts "## 学んだこと"
+      puts ""
+      puts "## 明日の作業予定"
+      puts ""
+      puts "## 所感"
+      puts ""
+      puts ""
+
       period = case since
       when 999 then 'すべての'
       when 0 then "本日の"
       else "#{since + 1}日間の"
       end
-      puts "#{period} 作業内容"
-      puts '-'
+      puts "## #{period}Github作業記録"
       puts ''
 
       DailyReportGenerator.events_with_grouping(gh: options[:gh], ghe: options[:ghe], from: from, to: to) do |repo, events|
         puts "### #{repo}"
         puts ''
 
-        events.sort_by(&:type).reverse.each_with_object({ keys: [] }) do |event, memo|
+        events.sort_by(&:created_at).each_with_object({ keys: [] }) do |event, memo|
 
           payload_type = event.type.
           gsub('Event', '').
@@ -91,6 +102,8 @@ module DailyReportGenerator
             else
               payload.body.plain.cut
             end
+          when 'PullRequestEvent'
+            "**#{payload.title.plain.cut}**"
           else
             payload.title.plain.cut
           end
@@ -101,7 +114,9 @@ module DailyReportGenerator
           next if memo[:keys].include?(key)
           memo[:keys] << key
 
-          puts "- [#{type}](#{link}): #{title}"
+          hour_and_minute = "#{event.created_at.hour}:#{event.created_at.min}"
+          hour_and_minute = "#{event.created_at.strftime('%H:%M')}"
+          puts "- `#{hour_and_minute}`[#{type}]: #{title}(#{link})"
         end
 
         puts ''

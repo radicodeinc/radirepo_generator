@@ -1,3 +1,4 @@
+ENV['TZ'] = 'Asia/Tokyo'
 
 require 'active_support'
 require 'active_support/core_ext'
@@ -7,7 +8,8 @@ require 'erb'
 require './lib/daily_report_generator/configurable'
 
 
-Time.zone = ENV['TIME_ZONE'] || 'UTC'
+
+Time.zone = 'Asia/Tokyo'
 
 require './lib/daily_report_generator/generator'
 require './lib/daily_report_generator/github'
