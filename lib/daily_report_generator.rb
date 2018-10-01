@@ -40,6 +40,10 @@ module DailyReportGenerator
 
       events
     end
+
+    def yesterday_todo
+        Github.new(gh_client).yesterday_todo
+    end
   end
 end
 

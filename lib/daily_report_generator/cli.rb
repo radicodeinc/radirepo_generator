@@ -54,6 +54,7 @@ module DailyReportGenerator
       diff.zero? ? from -= since : since = diff
 
       puts "## 本日の作業内容"
+      puts DailyReportGenerator.yesterday_todo
       puts ""
       puts "## 発生した問題"
       puts ""

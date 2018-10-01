@@ -27,6 +27,26 @@ module DailyReportGenerator
         CommitCommentEvent
       )
     end
+
+    def yesterday_todo
+        result = @client.search_issues("repo:radicodeinc/daily_report assignee:#{@client.user.login} sort:created-desc")
+        return nil unless result.items.first
+        issue = @client.issue("radicodeinc/daily_report", result.items.first.number)
+        start = false
+        fin = false
+        todo = []
+        issue.body.each_line do |line|
+          if start | fin
+            fin = line.match(/^##\s/)
+            break if fin
+            todo << line.gsub(/(\r\n|\r)/, "\n")
+            next
+          end
+          start = line.include?('## 明日の作業予定')
+        end
+
+        todo.join(nil).chomp!
+    end
   end
 end
 
