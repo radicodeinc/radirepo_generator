@@ -2,17 +2,17 @@ ENV['TZ'] = 'Asia/Tokyo'
 
 require 'active_support'
 require 'active_support/core_ext'
-require './lib/radirepo_generator/core_ext/string'
+require 'radirepo_generator/core_ext/string'
 require 'octokit'
 require 'erb'
-require './lib/radirepo_generator/configurable'
+require 'radirepo_generator/configurable'
 
 
 
 Time.zone = 'Asia/Tokyo'
 
-require './lib/radirepo_generator/generator'
-require './lib/radirepo_generator/github'
+require 'radirepo_generator/generator'
+require 'radirepo_generator/github'
 
 
 module RadirepoGenerator

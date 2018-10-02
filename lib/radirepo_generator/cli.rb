@@ -1,4 +1,4 @@
-require "./lib/radirepo_generator"
+require "radirepo_generator"
 require 'thor'
 require 'launchy'
 
@@ -111,7 +111,7 @@ module RadirepoGenerator
           github_events_title: github_events_title,
           github_events: github_events
       }
-      template = File.read("./templates/template.md.erb")
+      template = File.read(File.expand_path("../../../templates/template.md.erb", __FILE__))
       erb = ERB.new(template, 0, '%-')
       body = RadirepoGenerator.result(erb, reports)
       title = "#{Time.now.strftime("日報_%Y%m%d #{RadirepoGenerator.username}")}"
