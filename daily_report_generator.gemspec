@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'daily_report_generator/version'
+require 'radirepo_generator/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "radirepo"
-  spec.version       = DailyReportGenerator::VERSION
+  spec.version       = RadirepoGenerator::VERSION
   spec.authors       = ["KOTERA Yuki"]
   spec.email         = ["kotera@radicode.co.jp"]
 

@@ -1,5 +1,5 @@
 
-module DailyReportGenerator 
+module RadirepoGenerator
   class Generator
     attr_accessor :file
 

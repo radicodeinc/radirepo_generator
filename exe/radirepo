@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'daily_report_generator/cli'
+require 'radirepo_generator/cli'
 
-DailyReportGenerator::Cli.start
+RadirepoGenerator::Cli.start
 

@@ -12,8 +12,8 @@ task :default => :test
 
 
 task :generate do
-  result = DailyReportGenerator::Generator.generate(
-    github_events: DailyReportGenerator::Github.events
+  result = RadirepoGenerator::Generator.generate(
+    github_events: RadirepoGenerator::Github.events
   )
 
   puts result

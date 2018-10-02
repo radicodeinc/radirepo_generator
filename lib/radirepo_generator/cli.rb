@@ -1,8 +1,8 @@
-require "./lib/daily_report_generator"
+require "./lib/radirepo_generator"
 require 'thor'
 require 'launchy'
 
-module DailyReportGenerator 
+module RadirepoGenerator
   class Cli < Thor
     desc 'pulls', 'show pull requests'
     method_option :gh, type: :boolean, aliases: '-g', default: true
@@ -62,7 +62,7 @@ module DailyReportGenerator
       github_events_title = "#{period}Github作業記録"
 
       github_events = ''
-      DailyReportGenerator.events_with_grouping(gh: options[:gh], ghe: options[:ghe], from: from, to: to) do |repo, events|
+      RadirepoGenerator.events_with_grouping(gh: options[:gh], ghe: options[:ghe], from: from, to: to) do |repo, events|
         github_events += "### #{repo}\n"
 
         events.sort_by(&:created_at).each_with_object({ keys: [] }) do |event, memo|
@@ -107,17 +107,17 @@ module DailyReportGenerator
       end
 
       reports = {
-          yesterday_todo: DailyReportGenerator.yesterday_todo,
+          yesterday_todo: RadirepoGenerator.yesterday_todo,
           github_events_title: github_events_title,
           github_events: github_events
       }
       template = File.read("./templates/template.md.erb")
       erb = ERB.new(template, 0, '%-')
-      body = DailyReportGenerator.result(erb, reports)
-      title = "#{Time.now.strftime("日報_%Y%m%d #{DailyReportGenerator.username}")}"
+      body = RadirepoGenerator.result(erb, reports)
+      title = "#{Time.now.strftime("日報_%Y%m%d #{RadirepoGenerator.username}")}"
       body = body.gsub(/\n/, "\r")
       url = "https://github.com/radicodeinc/daily_report/issues/new?"
-      url += "assignee=#{DailyReportGenerator.github_username}&title=#{title}&body=#{CGI.escapeHTML(body)}&"
+      url += "assignee=#{RadirepoGenerator.github_username}&title=#{title}&body=#{CGI.escapeHTML(body)}&"
       url += "labels=daily report"
 
       Launchy.open(url)

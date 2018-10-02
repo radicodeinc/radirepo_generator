@@ -1,7 +1,7 @@
 require 'yaml'
 require 'pit'
 
-module DailyReportGenerator
+module RadirepoGenerator
   module Configurable
     class << self
       def hub_config_path
@@ -36,7 +36,7 @@ module DailyReportGenerator
       end
 
       def github_enterprise_host_by_pit
-        Pit.get('daily_report_generator', require: {
+        Pit.get('radirepo_generator', require: {
           'github_enterprise_host' => 'Github:Enterprise Host?(ex: your.domain.com)'
         })['github_enterprise_host']
       end

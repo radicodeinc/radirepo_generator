@@ -1,4 +1,4 @@
-module DailyReportGenerator
+module RadirepoGenerator
   class Github
     def initialize(client)
       @client = client
