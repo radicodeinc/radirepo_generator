@@ -39,6 +39,19 @@ module RadirepoGenerator
         todo.join(nil).chomp!
     end
 
+    def create_issue(title:, body:, assignee: nil, labels: nil)
+      option = {
+          assignee: assignee,
+          labels: labels
+      }
+      @client.create_issue('radicodeinc/daily_report', title, body, option)
+    end
+
+    def find_same_title_issue(title)
+      result = @client.search_issues("repo:radicodeinc/daily_report assignee:#{@client.user.login} in:title state:opened #{title}")
+      result.items
+    end
+
     private
 
     def aggressives

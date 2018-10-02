@@ -116,9 +116,19 @@ module RadirepoGenerator
       body = RadirepoGenerator.result(erb, reports)
       title = "#{Time.now.strftime("日報_%Y%m%d #{RadirepoGenerator.username}")}"
       body = body.gsub(/\n/, "\r")
-      url = "https://github.com/radicodeinc/daily_report/issues/new?"
-      url += "assignee=#{RadirepoGenerator.github_username}&title=#{title}&body=#{CGI.escapeHTML(body)}&"
-      url += "labels=daily report"
+      issues = RadirepoGenerator.find_github_same_title_issue(title)
+      title = "wip #{title}"
+      issue_number = if issues.first
+        issues.first.number
+      else
+        o = {
+            assignee: RadirepoGenerator.github_username,
+            labels: 'daily report'
+        }
+        issue = RadirepoGenerator.create_github_issue(title: title, body: body, option: o )
+        issue.number
+                     end
+      url = "https://github.com/radicodeinc/daily_report/issues/#{issue_number}/edit"
 
       Launchy.open(url)
     end

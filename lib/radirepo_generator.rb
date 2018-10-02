@@ -55,6 +55,14 @@ module RadirepoGenerator
       })['username']
     end
 
+    def create_github_issue(title:, body:, option: nil)
+      Github.new(gh_client).create_issue(title: title, body: body, assignee: option[:assignee], labels: option[:labels])
+    end
+
+    def find_github_same_title_issue(title)
+      Github.new(gh_client).find_same_title_issue(title)
+    end
+
     def result(erb, reports)
       erb.result(binding)
     end
