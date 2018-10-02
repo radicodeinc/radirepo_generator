@@ -9,6 +9,7 @@ module DailyReportGenerator
       @client.user_events(@login).each.with_object({}) { |event, memo|
         if event && aggressives.include?(event.type)
           if from <= event.created_at.localtime.to_date && event.created_at.localtime.to_date <= to
+            next if ignore_repositories.include?(event.repo.name)
             memo[event.repo.name] ||= []
             memo[event.repo.name] << event
           end
@@ -16,16 +17,6 @@ module DailyReportGenerator
       }.each do |repo, events|
         block.call(repo, events) if block
       end
-    end
-
-    def aggressives
-      %w(
-        IssuesEvent
-        PullRequestEvent
-        PullRequestReviewCommentEvent
-        IssueCommentEvent
-        CommitCommentEvent
-      )
     end
 
     def yesterday_todo
@@ -46,6 +37,24 @@ module DailyReportGenerator
         end
 
         todo.join(nil).chomp!
+    end
+
+    private
+
+    def aggressives
+      %w(
+        IssuesEvent
+        PullRequestEvent
+        PullRequestReviewCommentEvent
+        IssueCommentEvent
+        CommitCommentEvent
+      )
+    end
+
+    def ignore_repositories
+      %w(
+        radicodeinc/daily_report
+      )
     end
   end
 end
