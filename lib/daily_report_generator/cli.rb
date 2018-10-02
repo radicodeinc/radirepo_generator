@@ -1,5 +1,6 @@
 require "./lib/daily_report_generator"
 require 'thor'
+require 'launchy'
 
 module DailyReportGenerator 
   class Cli < Thor
@@ -53,33 +54,18 @@ module DailyReportGenerator
       diff = (to - from).to_i
       diff.zero? ? from -= since : since = diff
 
-      puts "## 本日の作業内容"
-      puts DailyReportGenerator.yesterday_todo
-      puts ""
-      puts "## 発生した問題"
-      puts ""
-      puts "## 学んだこと"
-      puts ""
-      puts "## 明日の作業予定"
-      puts ""
-      puts "## 所感"
-      puts ""
-      puts ""
-
       period = case since
       when 999 then 'すべての'
       when 0 then "本日の"
       else "#{since + 1}日間の"
       end
-      puts "## #{period}Github作業記録"
-      puts ''
+      github_events_title = "#{period}Github作業記録"
 
+      github_events = ''
       DailyReportGenerator.events_with_grouping(gh: options[:gh], ghe: options[:ghe], from: from, to: to) do |repo, events|
-        puts "### #{repo}"
-        puts ''
+        github_events += "### #{repo}\n"
 
         events.sort_by(&:created_at).each_with_object({ keys: [] }) do |event, memo|
-
           payload_type = event.type.
           gsub('Event', '').
           gsub(/.*Comment/, 'Comment').
@@ -115,13 +101,26 @@ module DailyReportGenerator
           next if memo[:keys].include?(key)
           memo[:keys] << key
 
-          hour_and_minute = "#{event.created_at.hour}:#{event.created_at.min}"
           hour_and_minute = "#{event.created_at.strftime('%H:%M')}"
-          puts "- `#{hour_and_minute}`[#{type}]: #{title}(#{link})"
+          github_events +=  "- `#{hour_and_minute}`[#{type}]: #{title}(#{link})\n"
         end
-
-        puts ''
       end
+
+      reports = {
+          yesterday_todo: DailyReportGenerator.yesterday_todo,
+          github_events_title: github_events_title,
+          github_events: github_events
+      }
+      template = File.read("./templates/template.md.erb")
+      erb = ERB.new(template, 0, '%-')
+      body = DailyReportGenerator.result(erb, reports)
+      title = "#{Time.now.strftime("日報_%Y%m%d #{DailyReportGenerator.username}")}"
+      body = body.gsub(/\n/, "\r")
+      url = "https://github.com/radicodeinc/daily_report/issues/new?"
+      url += "assignee=#{DailyReportGenerator.github_username}&title=#{title}&body=#{CGI.escapeHTML(body)}&"
+      url += "labels=daily report"
+
+      Launchy.open(url)
     end
   end
 end

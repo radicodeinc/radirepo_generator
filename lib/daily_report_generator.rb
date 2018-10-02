@@ -44,6 +44,20 @@ module DailyReportGenerator
     def yesterday_todo
         Github.new(gh_client).yesterday_todo
     end
+
+    def github_username
+      gh_client.user.login
+    end
+
+    def username
+      Pit.get('radirepo_generator', require: {
+          'username' => "分かりやすい日本語名(例: 小寺)"
+      })['username']
+    end
+
+    def result(erb, reports)
+      erb.result(binding)
+    end
   end
 end
 
