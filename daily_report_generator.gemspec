@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["KOTERA Yuki"]
   spec.email         = ["kotera@radicode.co.jp"]
 
-  spec.summary       = %q{A summary generator of GitHub activity for retrospective.}
-  spec.description   = %q{A summary generator of GitHub activity for retrospective.}
-  spec.homepage      = "https://github.com/radicodeinc/daily_report_generator"
+  spec.summary       = %q{A summary generator of GitHub activity for retrospective in radicode inc.}
+  spec.description   = %q{A summary generator of GitHub activity for retrospective in radicode inc.}
+  spec.homepage      = "https://github.com/radicodeinc/radirepo_generator"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
@@ -25,6 +25,6 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.10"
   spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "minitest"
+  # spec.add_development_dependency "minitest"
 end
 
