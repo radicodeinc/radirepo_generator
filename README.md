@@ -10,6 +10,12 @@
 % gem specific_install git@github.com:radicodeinc/radirepo_generator.git master
 ```
 
+## gem更新
+
+```
+% gem specific_install git@github.com:radicodeinc/radirepo_generator.git master
+```
+
 ## 使い方
 
 以下のコマンドを実行すると、日報のテンプレートが`radicodeinc/daily_report`のissueにwipとして作成され、作成されたページが開く。
