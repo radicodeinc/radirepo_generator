@@ -12,14 +12,17 @@
 
 ## 使い方
 
+以下のコマンドを実行すると、日報のテンプレートが`radicodeinc/daily_report`のissueにwipとして作成され、作成されたページが開く。
 ```
 % radirepo activity
 ```
 
+※ 一日に何度実行しても、1issueしか作成されず、github activityが更新される。
+
 ## 設定ファイル
 
 CLIに慣れている人は、`radirepo activity`初回実行時に自動的にエディタが立ち上がるはず。
-慣れてない人は、以下のコマンド実行する。
+慣れてない人は、以下のコマンド実行してから`radirepo activity`
 ```
 % export EDITOR=/usr/bin/vim
 ```
