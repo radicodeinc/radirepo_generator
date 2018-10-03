@@ -7,7 +7,7 @@ module RadirepoGenerator
 
     def events_with_grouping(from, to, option_ignore_repositories = [], &block)
       ignore_repositories = option_ignore_repositories + default_ignore_repositories
-      @client.user_events(@login).each.with_object({}) { |event, memo|
+      @client.user_events(@login).each.with_object({}) {|event, memo|
         if event && aggressives.include?(event.type)
           if from <= event.created_at.localtime.to_date && event.created_at.localtime.to_date <= to
             next if ignore_repositories.include?(event.repo.name)
@@ -20,28 +20,36 @@ module RadirepoGenerator
       end
     end
 
-    def yesterday_todo
-        result = @client.search_issues("repo:radicodeinc/daily_report assignee:#{@client.user.login} sort:created-desc")
-        return nil unless result.items.first
-        issue = @client.issue("radicodeinc/daily_report", result.items.first.number)
-        start = false
-        fin = false
-        todo = []
-        issue.body.each_line do |line|
-          if start | fin
-            fin = line.match(/^##\s/)
-            break if fin
-            todo << line.gsub(/(\r\n|\r)/, "\n")
-            next
-          end
-          start = line.include?('## 明日の作業予定')
-        end
+    def yesterday_issue
+      yesterday = Date.today.strftime("%Y-%m-%d")
+      search_query = "repo:radicodeinc/daily_report assignee:#{@client.user.login} sort:created-desc created:\"< #{yesterday}\""
+      result = @client.search_issues(search_query)
+      return nil unless result.items.first
+      result.items.first
+    end
 
-        todo.join(nil).chomp!
+    def yesterday_todo
+      y_issue = yesterday_issue
+      return nil unless y_issue
+      issue = @client.issue("radicodeinc/daily_report", y_issue.number)
+      start = false
+      fin = false
+      todo = []
+      issue.body.each_line do |line|
+        if start | fin
+          fin = line.match(/^##\s/)
+          break if fin
+          todo << line.gsub(/(\r\n|\r)/, "\n")
+          next
+        end
+        start = line.include?('## 明日の作業予定') || line.include?('## 明日何をするか')
+      end
+
+      todo.join(nil).chomp! + "\n\n(from: http://github.com/radicodeinc/daily_report/issues/#{y_issue.number})"
     end
 
     def update_issue_body(issue_number, body)
-      @client.update_issue('radicodeinc/daily_report', issue_number, { body: body })
+      @client.update_issue('radicodeinc/daily_report', issue_number, {body: body})
     end
 
     def create_issue(title:, body:, assignee: nil, labels: nil)

@@ -49,7 +49,7 @@ module RadirepoGenerator
     def activity
       issue = RadirepoGenerator.upsert_github_today_issue(options)
       puts issue.title
-      puts issue.body
+      puts issue.body.gsub("\r", "\n")
 
       url = "https://github.com/radicodeinc/daily_report/issues/#{issue.number}"
       Launchy.open(url)
