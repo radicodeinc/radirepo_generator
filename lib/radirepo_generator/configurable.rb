@@ -21,6 +21,24 @@ module RadirepoGenerator
         end
       end
 
+      def username
+        Pit.get('radirepo_generator', require: {
+            'username' => "分かりやすい日本語名(例: 小寺)"
+        })['username']
+      end
+
+      # return ignore repositories array
+      def ignore_repositories
+        string = Pit.get('radirepo_generator', require: {
+            'ignore_repositories' => "radicodeinc/daily_report,hoge/fuga"
+        })['ignore_repositories']
+        if string.present?
+          string.split(/,\s/)
+        else
+          []
+        end
+      end
+
       def token_by_pit(host = 'github.com')
         Pit.get(host, require: {
           'access_token' => "#{host} Access Token? (https://#{host}#{token_generate_path})"

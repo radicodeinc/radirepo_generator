@@ -25,29 +25,20 @@ module RadirepoGenerator
       Octokit::Client.new Configurable.github_enterprise_octokit_options
     end
 
-    def events_with_grouping(gh: true, ghe: true, from: nil, to: nil, &block)
+    def events_with_grouping(gh: true, ghe: true, from: nil, to: nil, ignore_repositories: [], &block)
       events = []
 
       if gh
-        gh_events = Github.new(gh_client).events_with_grouping(from, to, &block)
+        gh_events = Github.new(gh_client).events_with_grouping(from, to, ignore_repositories, &block)
         events.concat gh_events if gh_events.is_a?(Array)
       end
 
       if ghe
-        ghe_events = Github.new(ghe_client).events_with_grouping(from, to, &block)
+        ghe_events = Github.new(ghe_client).events_with_grouping(from, to, ignore_repositories, &block)
         events.concat ghe_events if ghe_events.is_a?(Array)
       end
 
       events
-    end
-
-    def username
-      Pit.get('radirepo_generator', require: {
-          'username' => "分かりやすい日本語名(例: 小寺)"
-      })['username']
-    end
-
-    def create_github_issue(title:, body:, option: nil)
     end
 
     def result(erb, reports)
@@ -56,7 +47,8 @@ module RadirepoGenerator
 
     def github_events_text(gh:, ghe:, from:, to:)
       github_events = ''
-      events_with_grouping(gh: gh, ghe: ghe, from: from, to: to) do |repo, events|
+      ignore_repositories = Configurable.ignore_repositories
+      events_with_grouping(gh: gh, ghe: ghe, from: from, to: to, ignore_repositories: ignore_repositories) do |repo, events|
         github_events += "### #{repo}\n"
 
         events.sort_by(&:created_at).each_with_object({ keys: [] }) do |event, memo|

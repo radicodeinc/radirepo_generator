@@ -5,7 +5,8 @@ module RadirepoGenerator
       @login = client.login
     end
 
-    def events_with_grouping(from, to, &block)
+    def events_with_grouping(from, to, option_ignore_repositories = [], &block)
+      ignore_repositories = option_ignore_repositories + default_ignore_repositories
       @client.user_events(@login).each.with_object({}) { |event, memo|
         if event && aggressives.include?(event.type)
           if from <= event.created_at.localtime.to_date && event.created_at.localtime.to_date <= to
@@ -73,7 +74,7 @@ module RadirepoGenerator
       )
     end
 
-    def ignore_repositories
+    def default_ignore_repositories
       %w(
         radicodeinc/daily_report
       )

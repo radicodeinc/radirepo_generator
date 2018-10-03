@@ -33,5 +33,6 @@ github.com:↲
   access_token: 123456789abcdefg....↲
 radirepo_generator:↲
   username: 佐藤
+  ignore_repositories: hogehoge/fugafuga
 ```
 
