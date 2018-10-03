@@ -118,20 +118,18 @@ module RadirepoGenerator
       template = File.read(File.expand_path("../../templates/template.md.erb", __FILE__))
       erb = ERB.new(template, 0, '%-')
       body = RadirepoGenerator.result(erb, reports)
-      title = "#{Time.now.strftime("日報_%Y%m%d #{RadirepoGenerator.username}")}"
+      title = "#{Time.now.strftime("日報_%Y%m%d #{Configurable.username}")}"
       body = body.gsub(/\n/, "\r")
       issues = Github.new(gh_client).find_same_title_issue(title)
       title = "wip #{title}"
-      issue_number = if issues.first
+      issue = if issues.first
                  issue = Github.new(gh_client).daily_report_issue(issues.first.number)
                  body = issue.body.gsub(/##[^\r\n]*?Github作業記録\r\n.+?(\r\n##|$)/m, "## #{github_events_title}\r\n#{github_events}")
                  Github.new(gh_client).update_issue_body( issues.first.number, body)
-                 issues.first.number
-      else
-        issue = Github.new(gh_client).create_issue(title: title, body: body, assignee: gh_client.user.login, labels: 'daily report')
-        issue.number
+                      else
+                  Github.new(gh_client).create_issue(title: title, body: body, assignee: gh_client.user.login, labels: 'daily report')
                      end
-      issue_number
+      issue
     end
   end
 end

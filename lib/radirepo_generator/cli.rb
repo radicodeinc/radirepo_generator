@@ -47,10 +47,11 @@ module RadirepoGenerator
     method_option :from, type: :string, aliases: '-f', default: Date.today.to_s
     method_option :to, type: :string, aliases: '-t', default: Date.today.to_s
     def activity
+      issue = RadirepoGenerator.upsert_github_today_issue(options)
+      puts issue.title
+      puts issue.body
 
-      issue_number = RadirepoGenerator.upsert_github_today_issue(options)
-      url = "https://github.com/radicodeinc/daily_report/issues/#{issue_number}"
-
+      url = "https://github.com/radicodeinc/daily_report/issues/#{issue.number}"
       Launchy.open(url)
     end
   end
