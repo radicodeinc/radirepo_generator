@@ -39,6 +39,10 @@ module RadirepoGenerator
         todo.join(nil).chomp!
     end
 
+    def update_issue_body(issue_number, body)
+      @client.update_issue('radicodeinc/daily_report', issue_number, { body: body })
+    end
+
     def create_issue(title:, body:, assignee: nil, labels: nil)
       option = {
           assignee: assignee,
@@ -48,8 +52,13 @@ module RadirepoGenerator
     end
 
     def find_same_title_issue(title)
-      result = @client.search_issues("repo:radicodeinc/daily_report assignee:#{@client.user.login} in:title state:opened #{title}")
+      q = " '#{title}' repo:radicodeinc/daily_report assignee:#{@client.user.login} state:open"
+      result = @client.search_issues(q)
       result.items
+    end
+
+    def daily_report_issue(issue_number)
+      @client.issue("radicodeinc/daily_report", issue_number)
     end
 
     private
