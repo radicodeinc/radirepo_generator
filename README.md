@@ -35,7 +35,7 @@ CLIに慣れている人は、`radirepo activity`初回実行時に自動的に�
 
 それでもダメなら下の情報を参考に自力設定する。
 
-`~/.pid/default.yaml`
+`~/.pit/default.yaml`
 ```
 ---↲
 github.com:↲
