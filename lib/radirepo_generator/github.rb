@@ -45,7 +45,11 @@ module RadirepoGenerator
         start = line.include?('## 明日の作業予定') || line.include?('## 明日何をするか')
       end
 
-      todo.join(nil).chomp! + "\n\n(from: http://github.com/radicodeinc/daily_report/issues/#{y_issue.number})"
+      if 0 < todo.size
+        todo.join(nil).chomp! + "\n\n(from: http://github.com/radicodeinc/daily_report/issues/#{y_issue.number})"
+      else
+        ""
+      end
     end
 
     def update_issue_body(issue_number, body)
