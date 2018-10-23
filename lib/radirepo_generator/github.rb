@@ -80,6 +80,7 @@ module RadirepoGenerator
       %w(
         IssuesEvent
         PullRequestEvent
+        PullRequestReviewEvent
         PullRequestReviewCommentEvent
         IssueCommentEvent
         CommitCommentEvent
