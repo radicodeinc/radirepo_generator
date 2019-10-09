@@ -51,7 +51,11 @@ module RadirepoGenerator
         github_events += "### #{repo}\n"
 
         events.sort_by(&:created_at).each_with_object({keys: []}) do |event, memo|
+          p event.type
+          p event
+          next if event.type == 'CreateEvent' || event.type == 'PushEvent'
           payload_type = event.type.
+              gsub('PullRequestReviewEvent', 'Review').
               gsub('Event', '').
               gsub(/.*Comment/, 'Comment').
               gsub('Issues', 'Issue').
@@ -61,7 +65,7 @@ module RadirepoGenerator
 
           title = case event.type
                   when 'IssueCommentEvent'
-                    "#{payload.body.plain.cut} (#{event.payload.issue.title.cut(30)})"
+                    "#{payload.body.plain.cut}"
                   when 'CommitCommentEvent'
                     payload.body.plain.cut
                   when 'IssuesEvent'
@@ -76,6 +80,8 @@ module RadirepoGenerator
                     end
                   when 'PullRequestEvent'
                     "**#{payload.title.plain.cut}**"
+                  when 'PullRequestReviewEvent'
+                    "[#{payload.state}] **#{payload.body.plain.cut}**"
                   else
                     payload.title.plain.cut
                   end
@@ -87,7 +93,7 @@ module RadirepoGenerator
           memo[:keys] << key
 
           hour_and_minute = "#{event.created_at.strftime('%H:%M')}"
-          github_events += "- `#{hour_and_minute}`[#{type}]: #{title}(#{link})\n"
+          github_events += "- `#{hour_and_minute}`[##{event.number}](#{link})[#{type}]: #{title}\n"
         end
       end
       github_events

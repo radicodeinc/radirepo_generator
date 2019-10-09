@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'activesupport'
-  spec.add_dependency 'octokit', '~> 4.1.1'
+  spec.add_dependency 'octokit', '~> 4.13.0'
   spec.add_dependency 'pit', '~> 0.0.7'
   spec.add_dependency 'thor'
   spec.add_dependency 'launchy'

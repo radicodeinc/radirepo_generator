@@ -8,8 +8,9 @@ module RadirepoGenerator
     def events_with_grouping(from, to, option_ignore_repositories = [], &block)
       ignore_repositories = option_ignore_repositories + default_ignore_repositories
       @client.user_events(@login).each.with_object({}) {|event, memo|
-        if event && aggressives.include?(event.type)
+        if event# && aggressives.include?(event.type)
           if from <= event.created_at.localtime.to_date && event.created_at.localtime.to_date <= to
+
             next if ignore_repositories.include?(event.repo.name) || event.repo.name.include?('radicodeinc') == false
             memo[event.repo.name] ||= []
             memo[event.repo.name] << event
